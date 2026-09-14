@@ -130,7 +130,3 @@ export function useCachedQuery<T>({
 export function writeQueryCache(cacheKey: string, data: unknown): void {
   queryCache.set(cacheKey, { data, fetchedAt: Date.now() });
 }
-
-export function readQueryCache(cacheKey: string): unknown {
-  return queryCache.get(cacheKey)?.data;
-}

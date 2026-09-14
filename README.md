@@ -44,7 +44,7 @@ npm run build && npm run check:bundle
 - [Архитектура](docs/architecture.md)
 - [Модель данных](docs/data-model.md)
 - [ADR](docs/adr/)
-- Скриншоты: [docs/screenshots/split-view.png](docs/screenshots/split-view.png), [mobile](docs/screenshots/mobile-tree.png) (сняты headless Chrome; живой UI использует системные шрифты)
+- Скриншоты: [split-view](docs/screenshots/split-view.png), [mobile](docs/screenshots/mobile-tree.png)
 
 ## Этапы (теги)
 
@@ -83,6 +83,4 @@ npm run build && npm run check:bundle
 
 **Сгенерировано:** Docker/nginx-черновик.
 
-**Переписано руками:** `parseOrgSearch` — тот же контракт фильтра, что вернул бы LLM, плюс явный fallback. Внешний LLM не подключали: ключ ломает `docker compose up`, а ревьюеру важнее увидеть fallback, чем обёртку над API.
-
-Подробные заметки по ходу работы: [docs/ai-notes.md](docs/ai-notes.md).
+**Переписано руками:** `parseOrgSearch` — тот же контракт фильтра, что вернул бы LLM, плюс явный fallback. Внешний LLM не подключали: ключ ломает `docker compose up`. Регэкспы с `\w` не видели кириллицу — поймали тестом и заменили на `\p{L}`.
