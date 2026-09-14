@@ -1,0 +1,57 @@
+import styled from "styled-components";
+
+export const TableWrap = styled.div`
+  overflow: auto;
+  border: 1px solid ${({ theme }) => theme.color.line};
+  border-radius: ${({ theme }) => theme.radius.m};
+`;
+
+export const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+`;
+
+export const Th = styled.th<{ $isActive?: boolean }>`
+  position: sticky;
+  top: 0;
+  padding: 10px 12px;
+  text-align: left;
+  font-weight: 600;
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  background: ${({ theme }) => theme.color.surfaceMuted};
+  color: ${({ theme, $isActive }) =>
+    $isActive ? theme.color.accent : theme.color.text};
+  border-bottom: 1px solid ${({ theme }) => theme.color.line};
+`;
+
+export const Td = styled.td`
+  padding: 9px 12px;
+  border-bottom: 1px solid ${({ theme }) => theme.color.line};
+  font-variant-numeric: tabular-nums;
+`;
+
+export const Tr = styled.tr<{ $isSelected: boolean }>`
+  background: ${({ theme, $isSelected }) =>
+    $isSelected ? theme.color.accentSoft : theme.color.surface};
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme, $isSelected }) =>
+      $isSelected ? theme.color.accentSoft : theme.color.surfaceMuted};
+  }
+`;
+
+export const SortHint = styled.span`
+  margin-left: 6px;
+  font-size: 11px;
+  color: ${({ theme }) => theme.color.textMuted};
+`;
+
+export const EmptyFilter = styled.p`
+  margin: 0;
+  padding: ${({ theme }) => theme.space.l};
+  color: ${({ theme }) => theme.color.textMuted};
+`;

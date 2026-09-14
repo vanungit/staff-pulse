@@ -44,8 +44,15 @@ export const Main = styled.main`
   padding: 24px 28px 40px;
 `;
 
+export const Layout = styled.div<{ $isSplit: boolean }>`
+  display: grid;
+  grid-template-columns: ${({ $isSplit }) => ($isSplit ? "minmax(320px, 1fr) minmax(0, 1.3fr)" : "1fr")};
+  gap: ${({ theme }) => theme.space.l};
+  align-items: start;
+`;
+
 export const Panel = styled.section`
-  max-width: 880px;
+  min-width: 0;
   padding: ${({ theme }) => theme.space.l};
   background: ${({ theme }) => theme.color.surface};
   border: 1px solid ${({ theme }) => theme.color.line};

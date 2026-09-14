@@ -30,6 +30,21 @@ UI (pages/org-dashboard)
 | empty | валидный массив длины 0 |
 | success | есть узлы, рисуем дерево |
 
+## Слои (этап 02)
+
+```
+OrgDashboard
+  → aggregateOrgTree(nodes)     useMemo, один проход post-order
+  → filter + sort               чистые функции, debounce 250мс на вводе
+  → OrgTable / OrgTree          общий selectedId
+```
+
+На ширине ≥1280px — split-view. Ниже — переключатель «Дерево / Таблица».
+
+Клик по строке таблицы раскрывает предков и подсвечивает узел в дереве.
+
 ## Почему свой кэш, а не TanStack Query
 
 См. [ADR-001](./adr/001-cache-layer.md). Коротко: бюджет бандла ≤200 КБ gzip на этапе 04, плюс нужно уметь объяснить каждый байт кэш-слоя на собеседовании.
+
+Таблица — нативная, см. [ADR-002](./adr/002-native-table.md).

@@ -25,6 +25,7 @@ export const NodeRow = styled.div<{ $isSelected?: boolean }>`
   min-height: 36px;
   padding: 4px 8px;
   border-radius: ${({ theme }) => theme.radius.s};
+  cursor: pointer;
   background: ${({ theme, $isSelected }) =>
     $isSelected ? theme.color.accentSoft : "transparent"};
 
