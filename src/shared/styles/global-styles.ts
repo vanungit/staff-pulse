@@ -25,4 +25,14 @@ export const GlobalStyles = createGlobalStyle`
   input {
     font: inherit;
   }
+
+  @keyframes staffPulseFade {
+    from {
+      background-color: ${({ theme }) => theme.color.accentSoft};
+    }
+
+    to {
+      background-color: transparent;
+    }
+  }
 `;

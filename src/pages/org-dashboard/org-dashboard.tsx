@@ -10,10 +10,13 @@ import { getAncestorIds } from "@/shared/lib/get-ancestor-ids";
 import { useDebouncedValue } from "@/shared/lib/use-debounced-value";
 import { useMediaQuery } from "@/shared/lib/use-media-query";
 
+import { ConnectionIndicator } from "./components/connection-indicator/connection-indicator";
 import { DashboardToolbar } from "./components/dashboard-toolbar/dashboard-toolbar";
 import { OrgTable } from "./components/org-table/org-table";
 import { OrgTree } from "./components/org-tree/org-tree";
 import { StatusState } from "./components/status-state/status-state";
+import { useLiveOrgState } from "./hooks/use-live-org-state";
+import { useOrgSocket } from "./hooks/use-org-socket";
 import { useOrgTree } from "./hooks/use-org-tree";
 import {
   SEARCH_DEBOUNCE_MS,
@@ -24,6 +27,7 @@ import {
   Brand,
   BrandName,
   Header,
+  HeaderAside,
   Layout,
   Main,
   Meta,
@@ -41,6 +45,11 @@ import {
 
 const OrgDashboard = () => {
   const { data, error, isLoading } = useOrgTree();
+  const { nodes, aggregates: liveAggregates, flashedIds, applyPatch } = useLiveOrgState(data);
+  const socketStatus = useOrgSocket({
+    isEnabled: Boolean(nodes && nodes.length > 0),
+    onPatch: applyPatch,
+  });
   const isSplitView = useMediaQuery(SPLIT_VIEW_QUERY);
 
   const [expandedIds, setExpandedIds] = useState<Set<string> | null>(null);
@@ -52,8 +61,15 @@ const OrgDashboard = () => {
 
   const debouncedSearch = useDebouncedValue(search, SEARCH_DEBOUNCE_MS);
 
-  const roots = useMemo(() => (data ? buildTree(data) : []), [data]);
-  const aggregates = useMemo(() => (data ? aggregateOrgTree(data) : []), [data]);
+  const aggregates = useMemo(() => {
+    if (liveAggregates.length > 0) {
+      return liveAggregates;
+    }
+
+    return nodes ? aggregateOrgTree(nodes) : [];
+  }, [liveAggregates, nodes]);
+
+  const roots = useMemo(() => (nodes ? buildTree(nodes) : []), [nodes]);
 
   const tableRows = useMemo(() => {
     const filtered = filterAggregates(aggregates, debouncedSearch);
@@ -99,11 +115,11 @@ const OrgDashboard = () => {
   const handleSelect = (id: string) => {
     setSelectedId(id);
 
-    if (!data) {
+    if (!nodes) {
       return;
     }
 
-    const ancestors = getAncestorIds(data, id);
+    const ancestors = getAncestorIds(nodes, id);
 
     setExpandedIds((current) => {
       const next = new Set(current ?? resolvedExpanded);
@@ -138,7 +154,10 @@ const OrgDashboard = () => {
           <BrandName>Staff Pulse</BrandName>
           <Title>Оргструктура</Title>
         </Brand>
-        <Meta>{data ? `${data.length} подразделений` : "мониторинг"}</Meta>
+        <HeaderAside>
+          <Meta>{nodes ? `${nodes.length} подразделений` : "мониторинг"}</Meta>
+          <ConnectionIndicator status={socketStatus} />
+        </HeaderAside>
       </Header>
       <Main>
         {isLoading && <StatusState kind="loading" />}
@@ -146,7 +165,7 @@ const OrgDashboard = () => {
           <StatusState kind="error" message={error.message} onRetry={handleRetry} />
         )}
         {data && data.length === 0 && <StatusState kind="empty" />}
-        {data && data.length > 0 && (
+        {nodes && nodes.length > 0 && (
           <>
             <DashboardToolbar
               search={search}
@@ -163,6 +182,7 @@ const OrgDashboard = () => {
                     roots={roots}
                     expandedIds={resolvedExpanded}
                     selectedId={selectedId}
+                    flashedIds={flashedIds}
                     onToggle={handleToggle}
                     onSelect={handleSelect}
                   />
@@ -178,6 +198,7 @@ const OrgDashboard = () => {
                     sortKey={sortKey}
                     sortDirection={sortDirection}
                     selectedId={selectedId}
+                    flashedIds={flashedIds}
                     onSort={handleSort}
                     onReverseSort={handleReverseSort}
                     onSelect={handleSelect}

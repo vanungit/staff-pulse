@@ -24,5 +24,5 @@ npm test
 
 - `step/1` — foundation: API, кэш, дерево
 - `step/2` — таблица и агрегация
-- `step/3` — live-обновления
+- `step/3` — live-обновления, backoff, клавиатура, reduced-motion
 - `step/4` — Docker, nginx, AI-поиск

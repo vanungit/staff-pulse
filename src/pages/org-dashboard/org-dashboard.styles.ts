@@ -34,6 +34,13 @@ export const Title = styled.h1`
   font-weight: 650;
 `;
 
+export const HeaderAside = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+`;
+
 export const Meta = styled.p`
   margin: 0;
   color: ${({ theme }) => theme.color.headerMuted};

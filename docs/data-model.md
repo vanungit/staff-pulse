@@ -22,7 +22,7 @@
 
 ## Агрегация
 
-Считается **один раз** после загрузки (`useMemo` от массива узлов).
+После первой загрузки — полный проход. На live-патче пересчитываются **только узел и предки**.
 
 Для каждого узла обходим поддерево снизу вверх:
 
@@ -46,3 +46,39 @@ weightedPerformance(u) =
 ## Связь таблица → дерево
 
 Клик по строке задаёт `selectedId`, раскрывает предков и скроллит узел в дереве.
+
+## Контракт WebSocket-патча
+
+Кадр `ws://<host>/ws`:
+
+```json
+{
+  "type": "node.updated",
+  "node": {
+    "id": "team-core",
+    "name": "Core",
+    "parentId": "dep-platform",
+    "headcount": 12,
+    "budget": 1800000,
+    "performance": 74,
+    "updatedAt": "2026-09-14T11:20:00.000Z"
+  }
+}
+```
+
+- Один узел целиком, не diff-поля и не всё дерево.
+- Клиент валидирует кадр zod-схемой; битый JSON игнорируется.
+- `GET /api/org-tree` после патча отдаёт уже изменённый массив — сервер мутирует ту же память.
+
+Инкрементальный пересчёт:
+
+```
+delta.headcount    = next.headcount - prev.headcount
+delta.budget       = next.budget - prev.budget
+delta.weightedSum  = next.perf×next.hc - prev.perf×prev.hc
+
+для id ∈ {узел} ∪ предки:
+  totalHeadcount += delta.headcount
+  totalBudget    += delta.budget
+  weightedPerformance = (oldPerf×oldHc + delta.weightedSum) / newHc
+```

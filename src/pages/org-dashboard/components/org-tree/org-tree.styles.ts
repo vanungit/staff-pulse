@@ -18,7 +18,7 @@ export const TreeItem = styled.li`
   margin: 2px 0;
 `;
 
-export const NodeRow = styled.div<{ $isSelected?: boolean }>`
+export const NodeRow = styled.div<{ $isSelected?: boolean; $isFlashed?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.space.s};
@@ -28,10 +28,17 @@ export const NodeRow = styled.div<{ $isSelected?: boolean }>`
   cursor: pointer;
   background: ${({ theme, $isSelected }) =>
     $isSelected ? theme.color.accentSoft : "transparent"};
+  animation: ${({ $isFlashed }) => ($isFlashed ? "staffPulseFade 1.5s ease-out" : "none")};
 
   &:hover {
     background: ${({ theme, $isSelected }) =>
       $isSelected ? theme.color.accentSoft : theme.color.surfaceMuted};
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    box-shadow: ${({ theme, $isFlashed }) =>
+      $isFlashed ? `inset 3px 0 0 ${theme.color.accent}` : "none"};
   }
 `;
 
@@ -63,6 +70,11 @@ export const Chevron = styled.span<{ $isExpanded: boolean }>`
   border-bottom: 5px solid transparent;
   border-left: 6px solid currentColor;
   transform: rotate(${({ $isExpanded }) => ($isExpanded ? "90deg" : "0deg")});
+  transition: transform 180ms ease;
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 export const NodeName = styled.span`

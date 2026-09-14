@@ -1,3 +1,4 @@
+import { Collapse } from "@/shared/ui/collapse/collapse";
 import { getPerformanceTone } from "@/shared/lib/performance-tone";
 import type { OrgTreeNode } from "@/shared/lib/build-tree";
 
@@ -17,6 +18,7 @@ type OrgTreeNodeViewProps = {
   node: OrgTreeNode;
   expandedIds: Set<string>;
   selectedId: string | null;
+  flashedIds: Set<string>;
   onToggle: (id: string) => void;
   onSelect: (id: string) => void;
 };
@@ -25,6 +27,7 @@ const OrgTreeNodeView = ({
   node,
   expandedIds,
   selectedId,
+  flashedIds,
   onToggle,
   onSelect,
 }: OrgTreeNodeViewProps) => {
@@ -37,6 +40,7 @@ const OrgTreeNodeView = ({
       <NodeRow
         role="treeitem"
         $isSelected={node.id === selectedId}
+        $isFlashed={flashedIds.has(node.id)}
         data-node-id={node.id}
         onClick={() => onSelect(node.id)}
       >
@@ -59,19 +63,22 @@ const OrgTreeNodeView = ({
           {node.performance}
         </PerformanceBadge>
       </NodeRow>
-      {hasChildren && isExpanded && (
-        <NestedList>
-          {node.children.map((child) => (
-            <OrgTreeNodeView
-              key={child.id}
-              node={child}
-              expandedIds={expandedIds}
-              selectedId={selectedId}
-              onToggle={onToggle}
-              onSelect={onSelect}
-            />
-          ))}
-        </NestedList>
+      {hasChildren && (
+        <Collapse isOpen={isExpanded}>
+          <NestedList>
+            {node.children.map((child) => (
+              <OrgTreeNodeView
+                key={child.id}
+                node={child}
+                expandedIds={expandedIds}
+                selectedId={selectedId}
+                flashedIds={flashedIds}
+                onToggle={onToggle}
+                onSelect={onSelect}
+              />
+            ))}
+          </NestedList>
+        </Collapse>
       )}
     </TreeItem>
   );

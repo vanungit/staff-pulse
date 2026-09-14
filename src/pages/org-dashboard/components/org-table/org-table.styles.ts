@@ -4,6 +4,11 @@ export const TableWrap = styled.div`
   overflow: auto;
   border: 1px solid ${({ theme }) => theme.color.line};
   border-radius: ${({ theme }) => theme.radius.m};
+
+  &:focus {
+    outline: 2px solid ${({ theme }) => theme.color.accent};
+    outline-offset: 2px;
+  }
 `;
 
 export const Table = styled.table`
@@ -27,10 +32,17 @@ export const Th = styled.th<{ $isActive?: boolean }>`
   border-bottom: 1px solid ${({ theme }) => theme.color.line};
 `;
 
-export const Td = styled.td`
+export const Td = styled.td<{ $isFlashed?: boolean }>`
   padding: 9px 12px;
   border-bottom: 1px solid ${({ theme }) => theme.color.line};
   font-variant-numeric: tabular-nums;
+  animation: ${({ $isFlashed }) => ($isFlashed ? "staffPulseFade 1.5s ease-out" : "none")};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    box-shadow: ${({ theme, $isFlashed }) =>
+      $isFlashed ? `inset 0 0 0 1px ${theme.color.accent}` : "none"};
+  }
 `;
 
 export const Tr = styled.tr<{ $isSelected: boolean }>`

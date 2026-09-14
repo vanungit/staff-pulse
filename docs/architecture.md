@@ -48,3 +48,19 @@ OrgDashboard
 См. [ADR-001](./adr/001-cache-layer.md). Коротко: бюджет бандла ≤200 КБ gzip на этапе 04, плюс нужно уметь объяснить каждый байт кэш-слоя на собеседовании.
 
 Таблица — нативная, см. [ADR-002](./adr/002-native-table.md).
+
+## Слои (этап 03)
+
+```
+HTTP snapshot → useLiveOrgState (hydrate + aggregates)
+WS /ws        → zod patch → applyPatch
+                 → заменить узел в плоском массиве
+                 → patchAggregates(узел + предки)
+                 → fade 1.5s, без полного рефетча
+```
+
+Обрыв сокета: экспоненциальный backoff 500мс → 16с. Индикатор в шапке.
+
+Раскрытие дерева: `grid-template-rows: 0fr / 1fr`. `prefers-reduced-motion: reduce` отключает transition и fade.
+
+См. [ADR-003](./adr/003-websocket.md).
