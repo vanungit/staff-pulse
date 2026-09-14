@@ -1,4 +1,4 @@
-import type { KeyboardEvent } from "react";
+import type { KeyboardEvent, Ref } from "react";
 
 import { formatBudgetRub, formatPerformance } from "@/shared/lib/format-budget";
 import type { OrgAggregate } from "@/shared/lib/aggregate-org-tree";
@@ -26,6 +26,7 @@ type OrgTableProps = {
   sortDirection: SortDirection;
   selectedId: string | null;
   flashedIds: Set<string>;
+  scrollRef?: Ref<HTMLDivElement>;
   onSort: (key: SortKey) => void;
   onReverseSort: () => void;
   onSelect: (id: string) => void;
@@ -37,6 +38,7 @@ const OrgTable = ({
   sortDirection,
   selectedId,
   flashedIds,
+  scrollRef,
   onSort,
   onReverseSort,
   onSelect,
@@ -100,7 +102,12 @@ const OrgTable = ({
   }
 
   return (
-    <TableWrap tabIndex={0} onKeyDown={handleKeyDown} aria-label="Таблица подразделений">
+    <TableWrap
+      ref={scrollRef}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      aria-label="Таблица подразделений"
+    >
       <Table>
         <thead>
           <tr>
@@ -126,6 +133,7 @@ const OrgTable = ({
             return (
               <Tr
                 key={row.id}
+                data-row-id={row.id}
                 $isSelected={row.id === selectedId}
                 onClick={() => onSelect(row.id)}
               >

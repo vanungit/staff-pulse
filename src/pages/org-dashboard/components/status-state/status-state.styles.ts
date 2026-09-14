@@ -12,6 +12,12 @@ export const StatusCard = styled.section<{ $kind: Kind }>`
   box-shadow: ${({ theme }) => theme.shadow.card};
   border: 1px solid ${({ theme }) => theme.color.line};
   border-left-width: 4px;
+  animation: staffEnter ${({ theme }) => theme.motion.mid} ${({ theme }) => theme.motion.easeOut};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
   border-left-color: ${({ theme, $kind }) => {
     if ($kind === "error") {
       return theme.color.danger;
@@ -46,4 +52,13 @@ export const RetryButton = styled.button`
   background: ${({ theme }) => theme.color.accent};
   color: ${({ theme }) => theme.color.surface};
   cursor: pointer;
+  transition: transform ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.spring};
+
+  &:hover {
+    transform: translateY(-1px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;

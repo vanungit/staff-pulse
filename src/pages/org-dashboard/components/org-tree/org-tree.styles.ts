@@ -29,17 +29,36 @@ export const NodeRow = styled.div<{ $isSelected?: boolean; $isFlashed?: boolean 
   cursor: pointer;
   background: ${({ theme, $isSelected }) =>
     $isSelected ? theme.color.accentSoft : "transparent"};
-  animation: ${({ $isFlashed }) => ($isFlashed ? "staffPulseFade 1.5s ease-out" : "none")};
+  box-shadow: ${({ theme, $isSelected }) =>
+    $isSelected ? `inset 3px 0 0 ${theme.color.accent}` : "none"};
+  animation: ${({ $isFlashed, $isSelected }) => {
+    if ($isFlashed) {
+      return "staffPulseFade 1.5s ease-out";
+    }
+
+    if ($isSelected) {
+      return "staffSelectPulse 520ms ease-out";
+    }
+
+    return "none";
+  }};
+  transition:
+    background ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut},
+    transform ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut},
+    box-shadow ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut};
 
   &:hover {
     background: ${({ theme, $isSelected }) =>
       $isSelected ? theme.color.accentSoft : theme.color.surfaceMuted};
+    transform: translateX(3px);
   }
 
   @media (prefers-reduced-motion: reduce) {
     animation: none;
-    box-shadow: ${({ theme, $isFlashed }) =>
-      $isFlashed ? `inset 3px 0 0 ${theme.color.accent}` : "none"};
+    transition: none;
+    transform: none;
+    box-shadow: ${({ theme, $isFlashed, $isSelected }) =>
+      $isFlashed || $isSelected ? `inset 3px 0 0 ${theme.color.accent}` : "none"};
   }
 `;
 
@@ -56,6 +75,9 @@ export const ToggleButton = styled.button<{ $isHidden?: boolean }>`
   color: ${({ theme }) => theme.color.textMuted};
   cursor: pointer;
   visibility: ${({ $isHidden }) => ($isHidden ? "hidden" : "visible")};
+  transition:
+    background ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut},
+    color ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut};
 
   &:hover {
     background: ${({ theme }) => theme.color.line};
@@ -71,7 +93,7 @@ export const Chevron = styled.span<{ $isExpanded: boolean }>`
   border-bottom: 5px solid transparent;
   border-left: 6px solid currentColor;
   transform: rotate(${({ $isExpanded }) => ($isExpanded ? "90deg" : "0deg")});
-  transition: transform 180ms ease;
+  transition: transform ${({ theme }) => theme.motion.mid} ${({ theme }) => theme.motion.spring};
 
   @media (prefers-reduced-motion: reduce) {
     transition: none;
@@ -121,7 +143,16 @@ export const PerformanceBadge = styled.span<{ $tone: "low" | "mid" | "high" }>`
   font-size: 12px;
   font-variant-numeric: tabular-nums;
   font-weight: 600;
+  transition: transform ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.spring};
   ${({ $tone }) => toneStyles[$tone]}
+
+  ${NodeRow}:hover & {
+    transform: scale(1.06);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
 `;
 
 export const PerformanceDot = styled.span<{ $tone: "low" | "mid" | "high" }>`

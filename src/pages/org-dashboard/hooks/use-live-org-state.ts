@@ -18,6 +18,7 @@ export function useLiveOrgState(fetchedNodes: OrgNode[] | null) {
   const [live, setLive] = useState<LiveOrgState | null>(null);
   const [flashedIds, setFlashedIds] = useState<Set<string>>(new Set());
   const isHydratedRef = useRef(false);
+  const fadeTimersRef = useRef<number[]>([]);
 
   useEffect(() => {
     if (!fetchedNodes || isHydratedRef.current) {
@@ -30,6 +31,12 @@ export function useLiveOrgState(fetchedNodes: OrgNode[] | null) {
       aggregates: aggregateOrgTree(fetchedNodes),
     });
   }, [fetchedNodes]);
+
+  useEffect(() => {
+    return () => {
+      fadeTimersRef.current.forEach((timerId) => window.clearTimeout(timerId));
+    };
+  }, []);
 
   const applyPatch = (nextNode: OrgNode) => {
     setLive((current) => {
@@ -60,13 +67,15 @@ export function useLiveOrgState(fetchedNodes: OrgNode[] | null) {
       return next;
     });
 
-    window.setTimeout(() => {
+    const timerId = window.setTimeout(() => {
       setFlashedIds((current) => {
         const next = new Set(current);
         next.delete(nextNode.id);
         return next;
       });
     }, FADE_DURATION_MS);
+
+    fadeTimersRef.current.push(timerId);
   };
 
   return {

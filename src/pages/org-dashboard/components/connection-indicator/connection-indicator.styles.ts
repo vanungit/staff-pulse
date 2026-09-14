@@ -22,6 +22,12 @@ export const Dot = styled.span<{ $status: SocketStatus }>`
   height: 8px;
   border-radius: 50%;
   background: ${({ theme, $status }) => theme.color[STATUS_COLOR[$status]]};
+  animation: ${({ $status }) =>
+    $status === "online" ? "staffOnlinePulse 1.8s ease-in-out infinite" : "none"};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 export const Label = styled.span``;

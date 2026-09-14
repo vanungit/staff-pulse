@@ -2,10 +2,16 @@ import styled from "styled-components";
 
 export const Toolbar = styled.div`
   display: flex;
+  flex-shrink: 0;
   flex-wrap: wrap;
   align-items: center;
   gap: ${({ theme }) => theme.space.m};
-  margin-bottom: ${({ theme }) => theme.space.l};
+  margin-bottom: ${({ theme }) => theme.space.m};
+  animation: staffEnter ${({ theme }) => theme.motion.mid} ${({ theme }) => theme.motion.easeOut};
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
 `;
 
 export const SearchField = styled.label`
@@ -27,6 +33,7 @@ export const SearchHint = styled.span<{ $mode: "structured" | "fallback" | "idle
   font-size: 12px;
   color: ${({ theme, $mode }) =>
     $mode === "structured" ? theme.color.accent : theme.color.textMuted};
+  transition: color ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut};
 `;
 
 export const SearchInput = styled.input`
@@ -36,10 +43,14 @@ export const SearchInput = styled.input`
   border-radius: ${({ theme }) => theme.radius.s};
   background: ${({ theme }) => theme.color.surface};
   color: ${({ theme }) => theme.color.text};
+  transition:
+    border-color ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut},
+    box-shadow ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut};
 
   &:focus {
-    outline: 2px solid ${({ theme }) => theme.color.accent};
-    outline-offset: 1px;
+    outline: none;
+    border-color: ${({ theme }) => theme.color.accent};
+    box-shadow: 0 0 0 3px ${({ theme }) => theme.color.accentSoft};
   }
 `;
 
@@ -61,4 +72,8 @@ export const ViewButton = styled.button<{ $isActive: boolean }>`
     $isActive ? theme.color.text : theme.color.textMuted};
   box-shadow: ${({ theme, $isActive }) => ($isActive ? theme.shadow.card : "none")};
   cursor: pointer;
+  transition:
+    background ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut},
+    color ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut},
+    box-shadow ${({ theme }) => theme.motion.fast} ${({ theme }) => theme.motion.easeOut};
 `;

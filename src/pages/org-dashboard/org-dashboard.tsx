@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { aggregateOrgTree } from "@/shared/lib/aggregate-org-tree";
 import {
@@ -12,6 +12,7 @@ import {
   describeSearch,
   parseOrgSearch,
 } from "@/shared/lib/parse-org-search";
+import { scrollChildIntoView } from "@/shared/lib/scroll-child-into-view";
 import { useDebouncedValue } from "@/shared/lib/use-debounced-value";
 import { useMediaQuery } from "@/shared/lib/use-media-query";
 
@@ -26,6 +27,7 @@ import { useOrgTree } from "./hooks/use-org-tree";
 import {
   SEARCH_DEBOUNCE_MS,
   SPLIT_VIEW_QUERY,
+  TREE_EXPAND_MS,
   type DashboardView,
 } from "./org-dashboard.constants";
 import {
@@ -38,6 +40,7 @@ import {
   Meta,
   Page,
   Panel,
+  PanelBody,
   PanelTitle,
   Title,
 } from "./org-dashboard.styles";
@@ -51,6 +54,8 @@ const OrgDashboard = () => {
     onPatch: applyPatch,
   });
   const isSplitView = useMediaQuery(SPLIT_VIEW_QUERY);
+  const treeScrollRef = useRef<HTMLDivElement>(null);
+  const tableScrollRef = useRef<HTMLDivElement>(null);
 
   const [expandedIds, setExpandedIds] = useState<Set<string> | null>(null);
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -97,10 +102,24 @@ const OrgDashboard = () => {
       return;
     }
 
-    document
-      .querySelector(`[data-node-id="${selectedId}"]`)
-      ?.scrollIntoView({ block: "nearest" });
-  }, [selectedId, view, isSplitView]);
+    const treeSelector = `[data-node-id="${CSS.escape(selectedId)}"]`;
+    const rowSelector = `[data-row-id="${CSS.escape(selectedId)}"]`;
+
+    const frameId = window.requestAnimationFrame(() => {
+      scrollChildIntoView(treeScrollRef.current, treeSelector);
+      scrollChildIntoView(tableScrollRef.current, rowSelector);
+    });
+
+    const timerId = window.setTimeout(() => {
+      scrollChildIntoView(treeScrollRef.current, treeSelector);
+      scrollChildIntoView(tableScrollRef.current, rowSelector);
+    }, TREE_EXPAND_MS);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timerId);
+    };
+  }, [isSplitView, selectedId, view, resolvedExpanded]);
 
   const handleToggle = (id: string) => {
     setExpandedIds((current) => {
@@ -184,14 +203,16 @@ const OrgDashboard = () => {
               {shouldShowTree && (
                 <Panel>
                   <PanelTitle>Дерево · второй уровень раскрыт</PanelTitle>
-                  <OrgTree
-                    roots={roots}
-                    expandedIds={resolvedExpanded}
-                    selectedId={selectedId}
-                    flashedIds={flashedIds}
-                    onToggle={handleToggle}
-                    onSelect={handleSelect}
-                  />
+                  <PanelBody ref={treeScrollRef}>
+                    <OrgTree
+                      roots={roots}
+                      expandedIds={resolvedExpanded}
+                      selectedId={selectedId}
+                      flashedIds={flashedIds}
+                      onToggle={handleToggle}
+                      onSelect={handleSelect}
+                    />
+                  </PanelBody>
                 </Panel>
               )}
               {shouldShowTable && (
@@ -205,6 +226,7 @@ const OrgDashboard = () => {
                     sortDirection={sortDirection}
                     selectedId={selectedId}
                     flashedIds={flashedIds}
+                    scrollRef={tableScrollRef}
                     onSort={handleSort}
                     onReverseSort={handleReverseSort}
                     onSelect={handleSelect}

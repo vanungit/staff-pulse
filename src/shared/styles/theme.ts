@@ -36,6 +36,14 @@ export const theme = {
   },
   shadow: {
     card: "0 1px 2px rgba(19, 32, 46, 0.06), 0 8px 24px rgba(19, 32, 46, 0.06)",
+    raised: "0 8px 28px rgba(19, 32, 46, 0.1)",
+  },
+  motion: {
+    easeOut: "cubic-bezier(0.22, 1, 0.36, 1)",
+    spring: "cubic-bezier(0.34, 1.3, 0.64, 1)",
+    fast: "160ms",
+    mid: "280ms",
+    slow: "480ms",
   },
   font: {
     family:

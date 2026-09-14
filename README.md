@@ -44,7 +44,7 @@ npm run build && npm run check:bundle
 - [Архитектура](docs/architecture.md)
 - [Модель данных](docs/data-model.md)
 - [ADR](docs/adr/)
-- Скриншоты: [docs/screenshots](docs/screenshots/)
+- Скриншоты: [docs/screenshots/split-view.png](docs/screenshots/split-view.png), [mobile](docs/screenshots/mobile-tree.png) (сняты headless Chrome; живой UI использует системные шрифты)
 
 ## Этапы (теги)
 
