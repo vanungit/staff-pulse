@@ -1,0 +1,19 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    environment:
+      PORT: ${PORT:-3001}
+      LIVE_INTERVAL_MS: ${LIVE_INTERVAL_MS:-2500}
+    expose:
+      - "3001"
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      - api

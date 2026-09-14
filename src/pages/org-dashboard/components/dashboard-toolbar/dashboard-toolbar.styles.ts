@@ -12,7 +12,7 @@ export const SearchField = styled.label`
   display: flex;
   flex-direction: column;
   gap: 4px;
-  flex: 1;
+  flex: 1 1 100%;
   min-width: 0;
   max-width: 420px;
 `;
@@ -20,6 +20,13 @@ export const SearchField = styled.label`
 export const SearchLabel = styled.span`
   font-size: 12px;
   color: ${({ theme }) => theme.color.textMuted};
+`;
+
+export const SearchHint = styled.span<{ $mode: "structured" | "fallback" | "idle" }>`
+  min-height: 16px;
+  font-size: 12px;
+  color: ${({ theme, $mode }) =>
+    $mode === "structured" ? theme.color.accent : theme.color.textMuted};
 `;
 
 export const SearchInput = styled.input`

@@ -64,3 +64,16 @@ WS /ws        → zod patch → applyPatch
 Раскрытие дерева: `grid-template-rows: 0fr / 1fr`. `prefers-reduced-motion: reduce` отключает transition и fade.
 
 См. [ADR-003](./adr/003-websocket.md).
+
+## Слои (этап 04)
+
+```
+строка поиска
+  → debounce 250мс
+  → parseOrgSearch        structured | fallback
+  → applyOrgSearchFilter  на уже посчитанных агрегатах
+```
+
+Production: `web` (nginx, gzip, статика) проксирует `/api` и `/ws` на `api`. Клиент ходит относительными путями — один origin.
+
+См. [ADR-004](./adr/004-ai-search.md).

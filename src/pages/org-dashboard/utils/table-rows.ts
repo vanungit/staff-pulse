@@ -9,16 +9,6 @@ export type SortKey =
 
 export type SortDirection = "asc" | "desc";
 
-export function filterAggregates(rows: OrgAggregate[], query: string): OrgAggregate[] {
-  const normalized = query.trim().toLocaleLowerCase("ru");
-
-  if (!normalized) {
-    return rows;
-  }
-
-  return rows.filter((row) => row.name.toLocaleLowerCase("ru").includes(normalized));
-}
-
 export function sortAggregates(
   rows: OrgAggregate[],
   key: SortKey,

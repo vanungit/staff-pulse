@@ -19,7 +19,8 @@ export const TreeItem = styled.li`
 `;
 
 export const NodeRow = styled.div<{ $isSelected?: boolean; $isFlashed?: boolean }>`
-  display: flex;
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto auto;
   align-items: center;
   gap: ${({ theme }) => theme.space.s};
   min-height: 36px;
@@ -81,9 +82,13 @@ export const NodeName = styled.span`
   flex: 1;
   min-width: 0;
   font-weight: 550;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `;
 
 export const Headcount = styled.span`
+  flex-shrink: 0;
   color: ${({ theme }) => theme.color.textMuted};
   font-variant-numeric: tabular-nums;
   font-size: 13px;
@@ -106,6 +111,7 @@ const toneStyles = {
 
 export const PerformanceBadge = styled.span<{ $tone: "low" | "mid" | "high" }>`
   display: inline-flex;
+  flex-shrink: 0;
   align-items: center;
   gap: 6px;
   min-width: 54px;

@@ -2,6 +2,7 @@ import type { DashboardView } from "../../org-dashboard.constants";
 
 import {
   SearchField,
+  SearchHint,
   SearchInput,
   SearchLabel,
   Toolbar,
@@ -11,6 +12,8 @@ import {
 
 type DashboardToolbarProps = {
   search: string;
+  searchHint: string;
+  searchMode: "structured" | "fallback" | "idle";
   onSearchChange: (value: string) => void;
   view: DashboardView;
   onViewChange: (view: DashboardView) => void;
@@ -19,6 +22,8 @@ type DashboardToolbarProps = {
 
 const DashboardToolbar = ({
   search,
+  searchHint,
+  searchMode,
   onSearchChange,
   view,
   onViewChange,
@@ -27,14 +32,15 @@ const DashboardToolbar = ({
   return (
     <Toolbar>
       <SearchField>
-        <SearchLabel>Фильтр по названию</SearchLabel>
+        <SearchLabel>AI-поиск</SearchLabel>
         <SearchInput
           id="org-search"
           type="search"
           value={search}
-          placeholder="Например, Платформа"
+          placeholder="команды с эффективностью выше 80"
           onChange={(event) => onSearchChange(event.target.value)}
         />
+        <SearchHint $mode={searchMode}>{searchHint}</SearchHint>
       </SearchField>
       {!isSplitView && (
         <ViewSwitch>

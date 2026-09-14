@@ -7,6 +7,11 @@ import {
   getDefaultExpandedIds,
 } from "@/shared/lib/build-tree";
 import { getAncestorIds } from "@/shared/lib/get-ancestor-ids";
+import {
+  applyOrgSearchFilter,
+  describeSearch,
+  parseOrgSearch,
+} from "@/shared/lib/parse-org-search";
 import { useDebouncedValue } from "@/shared/lib/use-debounced-value";
 import { useMediaQuery } from "@/shared/lib/use-media-query";
 
@@ -36,12 +41,7 @@ import {
   PanelTitle,
   Title,
 } from "./org-dashboard.styles";
-import {
-  filterAggregates,
-  sortAggregates,
-  type SortDirection,
-  type SortKey,
-} from "./utils/table-rows";
+import { sortAggregates, type SortDirection, type SortKey } from "./utils/table-rows";
 
 const OrgDashboard = () => {
   const { data, error, isLoading } = useOrgTree();
@@ -71,10 +71,14 @@ const OrgDashboard = () => {
 
   const roots = useMemo(() => (nodes ? buildTree(nodes) : []), [nodes]);
 
+  const parsedSearch = useMemo(() => parseOrgSearch(debouncedSearch), [debouncedSearch]);
+  const searchHint = describeSearch(parsedSearch);
+  const searchMode = debouncedSearch.trim() ? parsedSearch.mode : "idle";
+
   const tableRows = useMemo(() => {
-    const filtered = filterAggregates(aggregates, debouncedSearch);
+    const filtered = applyOrgSearchFilter(aggregates, parsedSearch.filter);
     return sortAggregates(filtered, sortKey, sortDirection);
-  }, [aggregates, debouncedSearch, sortDirection, sortKey]);
+  }, [aggregates, parsedSearch, sortDirection, sortKey]);
 
   const resolvedExpanded = useMemo(() => {
     if (expandedIds) {
@@ -169,6 +173,8 @@ const OrgDashboard = () => {
           <>
             <DashboardToolbar
               search={search}
+              searchHint={searchHint}
+              searchMode={searchMode}
               onSearchChange={setSearch}
               view={view}
               onViewChange={setView}

@@ -9,15 +9,19 @@
     "dev:server": "tsx watch server/index.ts",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "test": "vitest run"
+    "test": "vitest run",
+    "check:bundle": "node scripts/check-bundle-size.mjs"
   },
   "engines": {
     "node": ">=20"
   },
   "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "styled-components": "^6.5.3",
+    "tsx": "^4.23.13",
     "ws": "^8.21.3",
     "zod": "^4.6.5"
   },
@@ -30,9 +34,6 @@
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^6.1.1",
     "concurrently": "^10.0.5",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "tsx": "^4.23.13",
     "typescript": "^7.0.2",
     "vite": "^8.3.0",
     "vitest": "^5.0.0"

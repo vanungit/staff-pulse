@@ -6,6 +6,7 @@ export const Page = styled.div`
 
 export const Header = styled.header`
   display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: ${({ theme }) => theme.space.l};
@@ -49,6 +50,10 @@ export const Meta = styled.p`
 
 export const Main = styled.main`
   padding: 24px 28px 40px;
+
+  @media (max-width: 640px) {
+    padding: 16px 12px 32px;
+  }
 `;
 
 export const Layout = styled.div<{ $isSplit: boolean }>`
